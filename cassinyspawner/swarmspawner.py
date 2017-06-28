@@ -126,9 +126,8 @@ class SwarmSpawner(Spawner):
         else:
             server_name = 1
 
-        return "{}-{}-{}".format(self.service_prefix,
-                                 self.service_owner,
-                                 server_name
+        return "{}-{}".format(self.service_prefix,
+                                 self.user.name
                                 )
 
     def load_state(self, state):
