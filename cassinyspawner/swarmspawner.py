@@ -274,7 +274,7 @@ class SwarmSpawner(Spawner):
             for mount in self.container_spec['mounts']:
                 m = dict(**mount)
                 if 'source' in m:
-                    m['source'] = m['source'].format(username=self.service_owner)
+                    m['source'] = m['source'].format(username=self.user.name)
                 container_spec['mounts'].append(docker.types.Mount(**m))
 
             # some Envs are required by the single-user-image
