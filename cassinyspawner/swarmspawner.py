@@ -93,6 +93,11 @@ class SwarmSpawner(Spawner):
                     help=dedent(
                         """Additional args to create_host_config for service create
                         """))
+    placement = List([], config=True,
+                     help=dedent(
+                         """Parameters for specifying constraints or preferences regarding container placement
+                         """
+                     ))
     use_user_options = Bool(False, config=True,
                             help=dedent(
                                 """the spawner will use the dict passed through the form
@@ -137,8 +142,8 @@ class SwarmSpawner(Spawner):
             server_name = 1
 
         return "{}-{}".format(self.service_prefix,
-                                 self.user.name
-                                )
+                              self.user.name
+                              )
 
     def load_state(self, state):
         super().load_state(state)
@@ -274,7 +279,7 @@ class SwarmSpawner(Spawner):
             if hasattr(self, 'container_spec') and self.container_spec is not None:
                 container_spec = dict(**self.container_spec)
             elif user_options == {}:
-                raise("A container_spec is needed in to create a service")
+                raise ("A container_spec is needed in to create a service")
 
             container_spec.update(user_options.get('container_spec', {}))
 
@@ -316,6 +321,11 @@ class SwarmSpawner(Spawner):
             if user_options.get('networks') is not None:
                 networks = user_options.get('networks')
 
+            if hasattr(self, 'placement'):
+                placement = self.placement
+            if user_options.get('placement') is not None:
+                placement = user_options.get('placement')
+
             image = container_spec['Image']
             del container_spec['Image']
 
@@ -326,7 +336,7 @@ class SwarmSpawner(Spawner):
 
             task_spec = {'container_spec': container_spec,
                          'resources': resources,
-                         'placement': user_options.get('placement')
+                         'placement': placement
                          }
             task_tmpl = docker.types.TaskTemplate(**task_spec)
 
